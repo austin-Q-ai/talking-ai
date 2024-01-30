@@ -204,7 +204,7 @@ async function processTalk(msg) {
         if(debugMode.value<4){
             console.log('DID start');
             const talkResponse = await fetch(
-                `${DID_API.url}/talksxxx/streams/${streamId}`,
+                `${DID_API.url}/talks/streams/${streamId}`,
                 {
                     method: "POST",
                     headers: {
