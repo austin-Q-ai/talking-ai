@@ -8342,4 +8342,31 @@ body.scroll-lock {
   background-size: 100%;
   background-repeat: no-repeat;
 }
+
+.ava-page .doctor-avatar .doctor-avatar__content #talk-video {
+    display: flex;
+    max-width: 436px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 436 / 655;
+}
+
+.ava-page .chat-block__messages .simplebar-content .chat-block--holder {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    height: 100%;
+    gap: 16px;
+}
+
+.ava-page .chat-block__messages .simplebar-content .chat-message--item-holder {
+    width: 100%;
+}
+
+.ava-page .chat-block__messages .simplebar-content {
+    height: 100%;
+}
+
 /*# sourceMappingURL=styles.css.map */
