@@ -96,4 +96,14 @@
 .ava-page .form .form-message.form-message--show {
   display: inline-block;
 }
+
+@media screen and (max-width: 1000px) {
+    .ava-page.ava-page--login {
+        padding: 0 16px;
+    }
+    .ava-page .login-block {
+        padding: 32px 16px;
+    }
+}
+
 /*# sourceMappingURL=login.css.map */
