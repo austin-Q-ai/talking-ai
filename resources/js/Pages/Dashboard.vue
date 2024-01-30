@@ -5,7 +5,7 @@
 
         <div class="chat-container">
             <div class="chat-header">
-                <img src="images/logo.svg" alt="logo" width="118" class="chat-header__logo">
+                <img src="images/logo.svg" alt="logo" width="118" class="chat-header__logo" @click="incrementdebugMode()">
                 <div class="chat-header__attempts">
                     <p class="attempt-counter">
                         <span class="attempt-counter__caption">Attempt</span>
@@ -20,7 +20,6 @@
             <div class="flex-row">
                 <div class="doctor-avatar">
                     <div class="doctor-avatar__content">
-<!--                        <img src="images/avatar-preview.png" alt="avatar-doctor" width="437" class="doctor-avatar__img">-->
                         <video id="talk-video" autoplay loop  class="doctor-avatar__video_new"></video>
                     </div>
                     <div class="avatar-controls">
@@ -88,14 +87,14 @@
 
 
 
-        <div id="content" style="display: none">
+        <div id="content" :style="debugMode >= 4 ? 'display: block':'display: none'">
 
             <br />
             <div id="input-container" style="display: block">
                 <input
                     type="text"
                     id="user-input-field"
-                    placeholder="I am your ChatGPT Live Agent..."
+                    placeholder="GPT TEST MSG FIELD"
                 />
                 <hr />
 
@@ -167,7 +166,7 @@ import { createClient } from "@deepgram/sdk";
 let OPENAI_API_KEY = CONFIG.OPENAI_API_KEY;
 let DEEPGRAM_API_KEY = CONFIG.DEEPGRAM_API_KEY;
 const system_prompt = CONFIG.SYSTEM_PROMPT;
-const disableDID = true;
+const disableDID = ref(false);
 
 
 
@@ -180,15 +179,32 @@ async function processTalk(msg) {
         //
         // Get the user input from the text input field get ChatGPT Response
         const responseFromOpenAI = await fetchOpenAIResponse(msg);
-        addChatMessage({ role: "assistant", content: responseFromOpenAI })
+        addChatMessage({ role: "assistant", content: responseFromOpenAI})
+        //
+        // if(responseFromOpenAI != 'Hello, are you a patient?'){
+        //     console.log(responseFromOpenAI);
+        //     var parts = responseFromOpenAI.split('\n');
+        //     const responseFromOpenAI_emotion = parts[0].split(';')[1]?.trim();
+        //     const responseFromOpenAI_message = parts[1];
+        //     addEmotion(responseFromOpenAI_emotion);
+        //     addChatMessage({ role: "assistant", content: responseFromOpenAI_message})
+        // }
+        // else{
+        //     addChatMessage({ role: "assistant", content: responseFromOpenAI})
+        // }
+
+
+
         //
         // Print the openAIResponse to the console
         console.log("Chatting history:", chatMessages);
 
 
-        if(!disableDID){
+
+        if(debugMode.value<4){
+            console.log('DID start');
             const talkResponse = await fetch(
-                `${DID_API.url}/talks/streams/${streamId}`,
+                `${DID_API.url}/talksxxx/streams/${streamId}`,
                 {
                     method: "POST",
                     headers: {
@@ -200,8 +216,8 @@ async function processTalk(msg) {
                             type: "text",
                             subtitles: "false",
                             provider: {
-                                type: "microsoft",
-                                voice_id: "en-US-ChristopherNeural",
+                                type: "elevenlabs",
+                                voice_id: "oWAxZDx7w5VEj9dCyTzz",
                             },
                             ssml: false,
                             input: responseFromOpenAI, //send the openAIResponse to D-id
@@ -257,7 +273,7 @@ function clearUserMessage(){
 let talkVideo;
 
 async function fetchOpenAIResponse(userMessage) {
-    addChatMessage({ role: "user", content: userMessage });
+    addChatMessage({ role: "user", content: userMessage, emotion: null });
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -404,7 +420,8 @@ let makeConnection;
 
 
 
-const attempts = ref(0)
+const attempts = ref(0);
+const debugMode = ref(0);
 const maxAttempts = 3;
 
 
@@ -412,11 +429,26 @@ function increment() {
     attempts.value++
 }
 
+
 const chatMessages = reactive([ {role: 'system', content: system_prompt}]);
+const emotion = ref('');
+function addEmotion(aiEmotion) {
+    emotion.value = aiEmotion;
+}
+
+function incrementdebugMode() {
+    debugMode.value++
+    if(debugMode>=4){
+        disableDID.value = true;
+    }
+}
+
+
+
 
 function addChatMessage (newMessage){
    // if(newMessage.role !== 'system'){
-        const newItem = { role: newMessage.role, content: newMessage.content }
+        const newItem = { role: newMessage.role, content: newMessage.content}
         chatMessages.push(newItem);
 
     //}
@@ -667,6 +699,7 @@ onMounted(() => {
         stopRecording();
         stopAllStreams();
         closePC();
+
         document.getElementById('user-input').focus();
 
         navigator.mediaDevices
@@ -677,10 +710,6 @@ onMounted(() => {
                         "iOS / Safari Browser not supported. Please use Chrome or Firefox on Desktop or use Android."
                     );
                 }
-
-                dg_client = createNewDeepgram();
-                initDeepgram(dg_client);
-
                 mediaRecorder = new MediaRecorder(stream, {
                     mimeType: "audio/webm",
                 });
@@ -693,10 +722,13 @@ onMounted(() => {
             })
             .catch((err) => {
                 console.log("error on media recorder: ", err);
-                //alert("Can't find Media device or Permission denied!");
+                alert("Can't find Media device or Permission denied!");
+                stopRecording();
             });
 
-        const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
+
+
+    const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
             method: "POST",
             headers: {
                 Authorization: `Basic ${DID_API.key}`,
