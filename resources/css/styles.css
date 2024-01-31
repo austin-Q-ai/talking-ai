@@ -8369,4 +8369,24 @@ body.scroll-lock {
     height: 100%;
 }
 
+.ava-page .doctor-avatar .doctor-avatar__content:after {
+    content: '';
+
+    position: absolute;
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    /*aspect-ratio: 436 / 655;*/
+    width: 115%;
+    height: 111%;
+
+    background-image: url('/images/video-bg.svg');
+    background-position: center center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
 /*# sourceMappingURL=styles.css.map */
