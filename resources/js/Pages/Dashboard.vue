@@ -201,7 +201,7 @@ async function processTalk(msg) {
         // Get the user input from the text input field get ChatGPT Response
         const responseFromOpenAI = await fetchOpenAIResponse(msg);
         addChatMessage({ role: "assistant", content: responseFromOpenAI})
-
+        const responseFromOpenAI_message = responseFromOpenAI.split('\n')[0];
 
 
         //
@@ -237,37 +237,26 @@ async function processTalk(msg) {
                     },
                     body: JSON.stringify({
                         script: {
-                            type: "text",
-                            subtitles: "false",
+                            type: 'text',
+                            subtitles: 'false',
                             provider: {
-                                type: "elevenlabs",
-                                voice_id: "oWAxZDx7w5VEj9dCyTzz",
+                                type: 'elevenlabs',
+                                voice_id: 'oWAxZDx7w5VEj9dCyTzz'
                             },
-                            ssml: false,
-                            input: formatMessage(responseFromOpenAI),
+                            ssml: 'false',
+                            input: responseFromOpenAI_message, //send the openAIResponse to D-id
                         },
                         config: {
-                            stitch: true,
                             fluent: true,
-                            pad_audio: 0,
+                            pad_audio: 1,
                             driver_expressions: {
                                 expressions: [
-                                    { expression: "neutral", start_frame: 0, intensity: 0 },
-                                ],
-                                transition_frames: 0,
+                                    { expression: 'happy', start_frame: 0, intensity: 1 }],
+                                // transition_frames: 10
                             },
-                            align_driver: true,
-                            align_expand_factor: 0,
-                            auto_match: true,
-                            motion_factor: 0,
-                            normalization_factor: 0,
-                            sharpen: true,
                             stitch: true,
-                            result_format: "mp4",
-                        },
-                        driver_url: "bank://lively/",
-                        config: {
-                            stitch: true,
+                            sharpen: false,
+
                         },
                         session_id: sessionId,
                     }),
