@@ -1,18 +1,20 @@
-<!--<style>-->
+<style>
 
-<!--#idle-video {-->
-<!--    position: absolute;-->
-<!--    display: block;-->
-<!--    opacity: 1;-->
-<!--    transition: opacity 0.5s ease-in-out;-->
-<!--}-->
+#idle-video {
+    position: absolute;
+    display: block;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 4;
+}
 
-<!--#talk-video{-->
-<!--    display: block;-->
-<!--    opacity: 0;-->
-<!--}-->
+#talk-video{
+    z-index: 5;
+    display: block;
+    opacity: 0;
+}
 
-<!--</style>-->
+</style>
 
 
 <template>
@@ -36,7 +38,13 @@
             <div class="flex-row">
                 <div class="doctor-avatar">
                     <div class="doctor-avatar__content">
-                        <video id="talk-video" autoplay loop  class="doctor-avatar__video_new"></video>
+<!--                        <video id="talk-video" autoplay loop  class="doctor-avatar__video_new"></video>-->
+
+
+                        <video id="talk-video"  autoplay loop class="doctor-avatar__video_new"></video>
+                        <video id="idle-video"  autoplay loop muted class="doctor-avatar__video_new" src="/video/idle.mp4"></video>
+
+
                     </div>
                     <div class="avatar-controls">
                         <button class="avatar-controls__mobile-btn"></button>
@@ -724,9 +732,9 @@ onMounted(() => {
 
 
 
-
     talkVideo = document.getElementById("talk-video");
-    talkVideo.setAttribute("playsinline", "");
+    let idleVideo = document.getElementById('idle-video');
+
     const peerStatusLabel = document.getElementById("peer-status-label");
     const iceStatusLabel = document.getElementById("ice-status-label");
     const iceGatheringStatusLabel = document.getElementById(
@@ -736,6 +744,45 @@ onMounted(() => {
     const streamingStatusLabel = document.getElementById("streaming-status-label");
 
     const connectButton = document.getElementById("connect-button");
+
+
+    function playVideo() {
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        console.log('play idle video')
+        talkVideo.style.transition = 'opacity 0.1s ease-in-out';
+        talkVideo.style.opacity = 1;
+    }
+    function hideVideo() {
+        console.log('hide  video')
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        talkVideo.style.transition = 'opacity 0.4s ease-in-out';
+        talkVideo.style.opacity = 0;
+        idleVideo.currentTime = 0;
+    }
+    function playIdleVideo() {
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        console.log('play idle video')
+        idleVideo.style.transition = 'opacity 0.1s ease-in-out';
+        // idleVideo.currentTime= 0;
+        idleVideo.style.opacity = 1;
+    }
+    function hideIdleVideo() {
+        // talkVideo.srcObject = undefined;
+        // talkVideo.src = "neutral_sharpen_false.mp4";
+        // talkVideo.loop = true;
+        console.log('hide idle video')
+        idleVideo.style.transition = 'opacity 0.6s ease-in-out';
+        // idleVideo.style.zIndex = talkVideo.style.zIndex
+        idleVideo.style.opacity = 0;
+    }
+
+
 
     makeConnection = async () => {
         if (
@@ -904,12 +951,22 @@ onMounted(() => {
     function onVideoStatusChange(videoIsPlaying, stream) {
         let status;
         if (videoIsPlaying) {
+
             status = "streaming";
             const remoteStream = stream;
             setVideoElement(remoteStream);
+            playVideo();
+            hideIdleVideo();
+
+            //
+            // status = "streaming";
+            // const remoteStream = stream;
+            // setVideoElement(remoteStream);
         } else {
             status = "empty";
+            hideVideo();
             playIdleVideo();
+
         }
         streamingStatusLabel.innerText = status;
         streamingStatusLabel.className = "streamingState-" + status;
