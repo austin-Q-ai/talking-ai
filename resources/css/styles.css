@@ -8130,6 +8130,7 @@ body.scroll-lock {
 @media (max-width: 1000px) {
   .ava-page .doctor-avatar {
     max-width: 100%;
+    justify-content: center;
   }
   .ava-page .doctor-avatar .avatar-controls {
     position: fixed;
