@@ -244,7 +244,7 @@ async function processTalk(msg) {
                             pad_audio: 0,
                             driver_expressions: {
                                 expressions: [
-                                    { expression: "neutral", start_frame: 0, intensity: 0 },
+                                    { expression: "neutral", star   t_frame: 0, intensity: 0 },
                                 ],
                                 transition_frames: 0,
                             },
@@ -756,9 +756,9 @@ onMounted(() => {
             .getUserMedia({ audio: true })
             .then(async (stream) => {
                 if (!MediaRecorder.isTypeSupported("audio/webm")) {
-                    return alert(
-                        "iOS / Safari Browser not supported. Please use Chrome or Firefox on Desktop or use Android."
-                    );
+                    // return alert(
+                    //     "iOS / Safari Browser not supported. Please use Chrome or Firefox on Desktop or use Android."
+                    // );
                 }
                 mediaRecorder = new MediaRecorder(stream, {
                     mimeType: "audio/webm",
@@ -772,7 +772,7 @@ onMounted(() => {
             })
             .catch((err) => {
                 console.log("error on media recorder: ", err);
-                alert("Can't find Media device or Permission denied!");
+                // alert("Can't find Media device or Permission denied!");
                 stopRecording();
             });
 
