@@ -244,7 +244,7 @@ async function processTalk(msg) {
                             pad_audio: 0,
                             driver_expressions: {
                                 expressions: [
-                                    { expression: "neutral", star   t_frame: 0, intensity: 0 },
+                                    { expression: "neutral", start_frame: 0, intensity: 0 },
                                 ],
                                 transition_frames: 0,
                             },
