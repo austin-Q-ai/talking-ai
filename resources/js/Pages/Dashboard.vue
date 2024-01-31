@@ -41,8 +41,8 @@
 <!--                        <video id="talk-video" autoplay loop  class="doctor-avatar__video_new"></video>-->
 
 
-                        <video id="talk-video" width="400" height="400" autoplay loop class="doctor-avatar__video_new"></video>
-                        <video id="idle-video" width="400" height="400" autoplay loop muted class="doctor-avatar__video_new" src="/video/idle.mp4"></video>
+                        <video id="talk-video"  autoplay loop class="doctor-avatar__video_new"></video>
+                        <video id="idle-video"  autoplay loop muted class="doctor-avatar__video_new" src="/video/idle.mp4"></video>
 
 
                     </div>
