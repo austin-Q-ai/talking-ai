@@ -8345,7 +8345,7 @@ body.scroll-lock {
 
 .ava-page .doctor-avatar .doctor-avatar__content #talk-video {
     display: flex;
-    max-width: 436px;
+    max-width: 100%;
     width: 100%;
     height: auto;
     aspect-ratio: 436 / 655;
@@ -8414,6 +8414,10 @@ body.scroll-lock {
 .ava-page .chat-header {
     position: relative;
     z-index: 2;
+}
+
+.ava-page .doctor-avatar {
+    width: 100%;
 }
 
 /*# sourceMappingURL=styles.css.map */
