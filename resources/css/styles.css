@@ -8349,6 +8349,7 @@ body.scroll-lock {
     width: 100%;
     height: auto;
     aspect-ratio: 436 / 655;
+    z-index: 3;
 }
 
 .ava-page .chat-block__messages .simplebar-content .chat-block--holder {
@@ -8367,6 +8368,52 @@ body.scroll-lock {
 
 .ava-page .chat-block__messages .simplebar-content {
     height: 100%;
+}
+
+.ava-page .doctor-avatar .doctor-avatar__content:after {
+    content: '';
+
+    position: absolute;
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+
+    display: flex;
+    /*aspect-ratio: 436 / 655;*/
+    width: 150%;
+    height: 123%;
+
+    background-image: url('/images/video-bg.svg');
+    background-position: center center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.ava-page .doctor-avatar {
+    display: flex;
+}
+
+.ava-page .doctor-avatar .avatar-controls {
+    z-index: 5;
+}
+
+.ava-page .doctor-avatar .doctor-avatar__content {
+    margin-top: auto;
+}
+
+.ava-page .doctor-avatar {
+    z-index: 1;
+}
+
+.ava-page .chat-block {
+    z-index: 2;
+}
+
+.ava-page .chat-header {
+    position: relative;
+    z-index: 2;
 }
 
 /*# sourceMappingURL=styles.css.map */
