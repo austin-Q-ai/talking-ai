@@ -1,3 +1,19 @@
+<!--<style>-->
+
+<!--#idle-video {-->
+<!--    position: absolute;-->
+<!--    display: block;-->
+<!--    opacity: 1;-->
+<!--    transition: opacity 0.5s ease-in-out;-->
+<!--}-->
+
+<!--#talk-video{-->
+<!--    display: block;-->
+<!--    opacity: 0;-->
+<!--}-->
+
+<!--</style>-->
+
 
 <template>
 
@@ -7,10 +23,10 @@
             <div class="chat-header">
                 <img src="images/logo.svg" alt="logo" width="118" class="chat-header__logo" @click="incrementdebugMode()">
                 <div class="chat-header__attempts">
-                    <p class="attempt-counter">
-                        <span class="attempt-counter__caption">Attempt</span>
-                        <span class="attempt-counter__current" v-html="attempts"></span>/<span class="attempt-counter__total">3</span>
-                    </p>
+<!--                    <p class="attempt-counter">-->
+<!--                        <span class="attempt-counter__caption">Attempt</span>-->
+<!--                        <span class="attempt-counter__current" v-html="attempts"></span>/<span class="attempt-counter__total">3</span>-->
+<!--                    </p>-->
                     <button class="btn-retry-attempt">
                         <img src="images/icon__retry-chat.svg" alt="logo" width="24">
                     </button>
@@ -45,7 +61,7 @@
                         <div class="chat-block--holder" style="width: 100%">
                             <div  v-for="(message, index)  in chatMessages" class="chat-message--item-holder">
                                 <div class="chat-message" :class="message.role == 'user' ? ' chat-message--answer' : null " v-if="message.role !== 'system' ">
-                                    <div class="chat-message__text" v-if="message.role !== 'system'" v-html="message.content"></div>
+                                    <div class="chat-message__text" v-if="message.role !== 'system'" v-html="formatMessage(message.content)"></div>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +74,7 @@
                                 <button class="chat-block__controls-send"></button>
                             </form>
                         </div>
-                        <button class="chat-block__controls-voice" @click="increment"></button>
+                        <button class="chat-block__controls-voice"></button>
                     </div>
                 </div>
 
@@ -81,7 +97,7 @@
                 <hr class="mb-24">
                 <p class="mb-22">It is clear that something new works better, but if there is no news, show that you have prepared information specifically for the doctor on his previous request: "You talked, asked, requested and I found information for you".</p>
                 <p>If you feel confident, use unconventional solutions, for example, bring him a coffee and offer a short pause or intrigue him with the question "do you know how to reduce the frequency of symptoms by 5 times?"</p>
-                <button class="btn-ava mx-auto mt-40 popup-close" data-fn="retryHandler" :href="'dashboard'"><span>Retry</span><span class="btn-ava__icon"></span></button>
+                <button class="btn-ava mx-auto mt-40 popup-close" data-fn="retryHandler" onclick="window.location.reload();"><span>Retry</span><span class="btn-ava__icon"></span></button>
             </div>
         </div>
 
@@ -166,9 +182,6 @@ import { createClient } from "@deepgram/sdk";
 let OPENAI_API_KEY = CONFIG.OPENAI_API_KEY;
 let DEEPGRAM_API_KEY = CONFIG.DEEPGRAM_API_KEY;
 const system_prompt = CONFIG.SYSTEM_PROMPT;
-const disableDID = ref(false);
-
-
 
 
 async function processTalk(msg) {
@@ -180,6 +193,9 @@ async function processTalk(msg) {
         // Get the user input from the text input field get ChatGPT Response
         const responseFromOpenAI = await fetchOpenAIResponse(msg);
         addChatMessage({ role: "assistant", content: responseFromOpenAI})
+
+
+
         //
         // if(responseFromOpenAI != 'Hello, are you a patient?'){
         //     console.log(responseFromOpenAI);
@@ -220,7 +236,7 @@ async function processTalk(msg) {
                                 voice_id: "oWAxZDx7w5VEj9dCyTzz",
                             },
                             ssml: false,
-                            input: responseFromOpenAI, //send the openAIResponse to D-id
+                            input: formatMessage(responseFromOpenAI),
                         },
                         config: {
                             stitch: true,
@@ -248,6 +264,7 @@ async function processTalk(msg) {
                         session_id: sessionId,
                     }),
                 }
+
             );
 
         }
@@ -256,10 +273,15 @@ async function processTalk(msg) {
 }
 
 
+
 const userMessage = ref('');
 
-function sendMessage(e){
+// Remove emotion if needed
+function formatMessage(message) {
+    return  message.split('\n')[1] || message;
+}
 
+function sendMessage(e){
     e.preventDefault();
     processTalk(userMessage.value)
     clearUserMessage();
@@ -281,10 +303,10 @@ async function fetchOpenAIResponse(userMessage) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            model: "gpt-3.5-turbo-1106",
+            model: "gpt-4-1106-preview",
             messages: chatMessages,
             temperature: 0.7,
-            max_tokens: 100,
+            // max_tokens: 100,
         }),
     });
 
@@ -423,7 +445,7 @@ let makeConnection;
 const attempts = ref(0);
 const debugMode = ref(0);
 const maxAttempts = 3;
-
+const seriousEmotion = ref(0);
 
 function increment() {
     attempts.value++
@@ -438,11 +460,37 @@ function addEmotion(aiEmotion) {
 
 function incrementdebugMode() {
     debugMode.value++
-    if(debugMode>=4){
-        disableDID.value = true;
-    }
 }
 
+function nextAttempt(){
+
+    //TODO remove hardcode
+    document.querySelector('.btn-retry-attempt').click();
+    // document.get
+    //
+    // increment();
+    // seriousEmotion.value = 0;
+    //
+    // chatMessages.splice(0,chatMessages.length);
+    // chatMessages.push([{role: 'system', content: system_prompt}]);
+
+    //popupWindowsInstance.show('.popup-block--2');
+}
+
+
+function attemptsEmotionCheck(message){
+
+    let emotion = (message.match(/Emotion;\s*([^\s;]+)/) || [])[1];
+    console.log(emotion);
+    if(emotion === 'serious'){
+        seriousEmotion.value ++;
+    }
+    if(seriousEmotion.value > 4){
+        nextAttempt();
+    }
+
+
+}
 
 
 
@@ -450,7 +498,9 @@ function addChatMessage (newMessage){
    // if(newMessage.role !== 'system'){
         const newItem = { role: newMessage.role, content: newMessage.content}
         chatMessages.push(newItem);
-
+        if(newMessage.role === 'assistant'){
+            attemptsEmotionCheck(newItem.content);
+        }
     //}
 }
 
