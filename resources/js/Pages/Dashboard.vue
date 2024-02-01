@@ -174,7 +174,7 @@ import { ref, onMounted, watch, reactive} from 'vue'
 
 // TODO Move all secrets to configs, move SYSTEM_PROMPT to CMS
 const DID_API = {
-    "key": "aW5mb0B2aXZhbnRpLmV1:ie2OZsYAnbKWkZMOXgKVG",
+    "key": "cmFuZDEyQGRlcG9pc2RvdG9xdWUuY29t:mmuZFV7ikPY4TwpU1MoA-",
     "url": "https://api.d-id.com"
 };
 
@@ -244,7 +244,7 @@ async function processTalk(msg) {
                                 voice_id: 'oWAxZDx7w5VEj9dCyTzz'
                             },
                             ssml: 'false',
-                            input: responseFromOpenAI_message, //send the openAIResponse to D-id
+                            input: formatMessage(responseFromOpenAI), //send the openAIResponse to D-id
                         },
                         config: {
                             fluent: true,
